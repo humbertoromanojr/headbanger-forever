@@ -28,6 +28,7 @@
 - [React Navigation](https://reactnavigation.org/docs/getting-started#installation)
     - [Native Stack](https://reactnavigation.org/docs/hello-react-navigation)
     - [Drawer Navigator](https://reactnavigation.org/docs/6.x/drawer-navigator)
+- [Async Storage](https://react-native-async-storage.github.io/async-storage/docs/install)
 
 ## Demonstration
 
@@ -63,11 +64,15 @@ This project is licensed under the MIT License - see the [LICENSE](https://opens
 <img src="https://avatars1.githubusercontent.com/u/6500430?s=460&u=42d7e22fa1c77b061505fe1cfc3fcaa3e2a4d1e5&v=4" width="80" alt="linkedin.com/in/junior-dev" />
 <img src="https://drive.google.com/uc?export=view&id=1-y6rFrn4uqPfLx3nuUTXh14OeRGSZzHu" alt="" width="42" border="0" />
 :guitar: Humberto Jr :guitar:
+<br /><br />
+
+[**LinkedIn**](linkedin.com/in/humbertoromanojr) <br />
+[**GitLab**](gitlab.com/humbertoromanojr) <br />
+<img src="https://drive.google.com/uc?export=view&id=160InxEPlK0IynTEGEmQJDETo_8grncjI" alt="" width="22" border="0" />: astronomi@gmail.com <br />
 <br />
 
-LinkedIn: linkedin.com/in/humbertoromanojr <br />
-GitLab: gitlab.com/humbertoromanojr <br />
-<img src="https://drive.google.com/uc?export=view&id=160InxEPlK0IynTEGEmQJDETo_8grncjI" alt="" width="22" border="0" />: astronomi@gmail.com <br />
+:metal::metal::metal: :metal::metal::metal: :metal::metal::metal: :metal::metal::metal:
+
 <br />
 
 Made with <img src="https://drive.google.com/uc?export=view&id=1bb7UVQdQc1QpCIGqaI2bh4YdAn6Ihah-" alt="" width="22" border="0" /> and lots of animation by :guitar: Humberto Jr :guitar:

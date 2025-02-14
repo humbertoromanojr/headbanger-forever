@@ -1,22 +1,15 @@
-import * as React from 'react';
+import * as React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { createStaticNavigation } from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { SignInScreen } from "../screens/SignIn";
 
-import {SignInScreen} from '../screens/SignIn';
-
-const RootStack = createNativeStackNavigator({
-    initialRouteName: 'SignIn',
-    screens: {
-      SignIn: SignInScreen,
-      //Details: DetailsScreen,
-    },
-  });
-
-  const NavigationStack = createStaticNavigation(RootStack);
+const Stack = createNativeStackNavigator();
 
 export function AuthStack() {
-  return (
-    <NavigationStack />
-  );
+	return (
+		<Stack.Navigator>
+			<Stack.Screen name='SignIn' component={SignInScreen} />
+		</Stack.Navigator>
+	);
 }

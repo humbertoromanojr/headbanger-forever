@@ -1,15 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Alert } from "react-native";
+import { View, StyleSheet, Alert, ActivityIndicator } from "react-native";
 
 import { CustomButton } from "../../components/CustomButton";
 import { CustomInput } from "../../components/CustomInput";
 import { useAuth } from "../../contexts/Auth";
 export function SignInScreen() {
-	const { signIn } = useAuth();
+	const { signIn, isLoading } = useAuth();
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [isLoading, setIsLoading] = useState(false);
 
 	async function handleAccessCredential() {
 		try {
@@ -18,12 +17,9 @@ export function SignInScreen() {
 			}
 			console.log("------ SignIn ok ----- ", signIn);
 			signIn(email, password);
-
-			setIsLoading(true);
 		} catch (error) {
 			Alert.alert("Ingresso", "Não foi possível encontrá-lo!");
 			console.error("==> SignIn: ", error);
-			setIsLoading(false);
 		}
 	}
 
@@ -44,11 +40,15 @@ export function SignInScreen() {
 				value={password}
 				onChangeText={setPassword}
 			/>
-			<CustomButton
-				onPress={() => handleAccessCredential()}
-				title='Register'
-				isLoading={isLoading}
-			/>
+			{isLoading ? (
+				<ActivityIndicator size={"large"} color='#fff' />
+			) : (
+				<CustomButton
+					onPress={() => handleAccessCredential()}
+					title='Register'
+					isLoading={isLoading}
+				/>
+			)}
 		</View>
 	);
 }

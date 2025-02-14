@@ -66,8 +66,8 @@ This project is licensed under the MIT License - see the [LICENSE](https://opens
 :guitar: Humberto Jr :guitar:
 <br /><br />
 
-[**LinkedIn**](linkedin.com/in/humbertoromanojr) <br />
-[**GitLab**](gitlab.com/humbertoromanojr) <br />
+[**LinkedIn**](https://www.linkedin.com/in/humbertoromanojr) <br />
+[**GitLab**](https://gitlab.com/humbertoromanojr) <br />
 <img src="https://drive.google.com/uc?export=view&id=160InxEPlK0IynTEGEmQJDETo_8grncjI" alt="" width="22" border="0" />: astronomi@gmail.com <br />
 <br />
 

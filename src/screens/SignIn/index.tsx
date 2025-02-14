@@ -1,21 +1,64 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from "react";
+import { View, Text, StyleSheet, Alert } from "react-native";
 
+import { CustomButton } from "../../components/CustomButton";
+import { CustomInput } from "../../components/CustomInput";
+import { useAuth } from "../../contexts/Auth";
 export function SignInScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>SignIn</Text>
-     </View>
-  );
+	const { signIn } = useAuth();
+
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
+
+	async function handleAccessCredential() {
+		try {
+			if (!password.trim() || !email.trim()) {
+				return Alert.alert("Inscrição", "Preencha todos os campos!!!");
+			}
+			console.log("------ SignIn ok ----- ", signIn);
+			signIn(email, password);
+
+			setIsLoading(true);
+		} catch (error) {
+			Alert.alert("Ingresso", "Não foi possível encontrá-lo!");
+			console.error("==> SignIn: ", error);
+			setIsLoading(false);
+		}
+	}
+
+	return (
+		<View style={styles.container}>
+			<CustomInput
+				title='Email'
+				placeholder='Email'
+				placeholderTextColor='#fff'
+				value={email}
+				onChangeText={setEmail}
+			/>
+			<CustomInput
+				title='Senha'
+				placeholderTextColor='#fff'
+				placeholder='Password'
+				secureTextEntry
+				value={password}
+				onChangeText={setPassword}
+			/>
+			<CustomButton
+				onPress={() => handleAccessCredential()}
+				title='Register'
+				isLoading={isLoading}
+			/>
+		</View>
+	);
 }
 
-
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#000',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    title: {color: '#fff', fontSize: 22},
+	container: {
+		flex: 1,
+		backgroundColor: "#000",
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	title: { color: "#fff", fontSize: 22 },
 });

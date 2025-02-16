@@ -30,6 +30,8 @@ export function SignInScreen() {
 				placeholder='Email'
 				placeholderTextColor='#fff'
 				value={email}
+				keyboardType='default'
+				autoCapitalize='none'
 				onChangeText={setEmail}
 			/>
 			<CustomInput

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
 	View,
 	Text,
@@ -19,8 +19,8 @@ import { CustomInput } from "../../components/CustomInput";
 
 const windowWidth = Dimensions.get("window").width;
 
-type FavoriteGenresProps = {
-	id: number | undefined;
+type FavoriteBandsProps = {
+	id: string | undefined;
 	name: string | undefined;
 	image: string | undefined;
 	link: string | undefined;
@@ -38,79 +38,66 @@ export function MyFavoriteGenresScreen() {
 
 	const [hiddenForm, setHiddenForm] = useState(true);
 
-	async function loadGenreFavorites() {
+	function loadGenreFavorites() {
+		console.log("loadGenreFavorites ----> ", genreName);
+
+		if (genreName == "" || genreName == null) {
+			Alert.alert("Error", "Please enter a Genre name!");
+			return;
+		}
+
+		setIsLoading(true);
+
 		try {
-			if (genreName == "" || genreName == null) {
-				Alert.alert("Error", "Please enter a Genre name!");
-				return;
-			}
+			fetch(`https://metal-api.dev/search/bands/genre/${genreName}`, {
+				method: "GET",
+			})
+				.then(async (response) => {
+					const res = await response.json();
 
-			setIsLoading(true);
+					console.log("data Album Name: ", res);
 
-			const response = await api
-				.get(`/search/bands/genre/${genreName}`)
-				.then((response) => {
-					if (response.data.length > 0) {
-						const data = response.data;
-						setDataGenreFavorites([data]);
-
-						console.log("genre Name: ", data[0].genre);
-
-						setHiddenForm(false);
-					} else {
-						setIsLoading(false);
-
-						Alert.alert("Error", "No Genre found with this name! ");
-						return;
-					}
-
+					setDataGenreFavorites(res);
+					setHiddenForm(false);
 					setIsLoading(false);
 					setGenreName("");
 				})
 				.catch((error) => {
-					console.error(error);
-					setIsLoading(false);
-					Alert.alert(
-						"Error",
-						"Please try again more later! 1 loadBandNames",
+					console.error(
+						"Error then catch MyFavoriteGenresScreen: ",
+						error,
 					);
-				});
+					setIsLoading(false);
+					setGenreName("");
+					Alert.alert("Error", "Please try again more later!");
+				})
+				.finally(() => setIsLoading(false));
 		} catch (error) {
-			console.error("Error", error);
+			console.log("Error try catch MyFavoriteGenresScreen: ", error);
 			setIsLoading(false);
-			Alert.alert(
-				"Error",
-				"Please try again more later! 2 loadBandNames",
-			);
+			setGenreName("");
+			Alert.alert("Error", "Please try again more later!");
 		}
 	}
-
-	useEffect(() => {
-		setGenreName("Death Metal");
-		loadGenreFavorites();
-	}, []);
-
-	console.log("dataGenreFavorites :", dataGenreFavorites);
-	console.log("genreName :", genreName);
 
 	const backSearchFavoriteGenres = () => {
 		setHiddenForm(true);
 		setDataGenreFavorites([]);
 	};
 
-	const GenresHeader = () => {
+	const ListHeader = () => {
 		return (
-			<View style={styles.containerGenresHeader}>
+			<View style={styles.containerListHeader}>
 				<Image
 					resizeMode='contain'
-					style={styles.imageGenresHeader}
+					style={styles.imageListHeader}
 					source={require("../../assets/images/metal-arquives-logo.jpg")}
 				/>
 			</View>
 		);
 	};
 
-	const GenreSeparatorItems = () => {
+	const SeparatorItems = () => {
 		return (
 			<View style={{ width: windowWidth }}>
 				<View
@@ -123,17 +110,21 @@ export function MyFavoriteGenresScreen() {
 		);
 	};
 
+	function seeMyFavoriteBand(item: string) {
+		navigation.setParams({ item });
+
+		navigation.navigate("My Favorite Band Details", { item });
+	}
+
 	function GenresItem(item: any) {
 		return (
-			<View key={item.id} style={styles.containerBand}>
-				<Text style={styles.title}>{item.name}</Text>
-				<Image
-					style={styles.bandCover}
-					resizeMode='cover'
-					source={{
-						uri: `${item.link}`,
-					}}
-				/>
+			<TouchableOpacity
+				key={item.id}
+				style={styles.containerBand}
+				onPress={() => seeMyFavoriteBand(item.id)}>
+				<View style={styles.containerTitle}>
+					<Text style={styles.title}>{item.name}</Text>
+				</View>
 				<View style={styles.containerInfoBand}>
 					<Text style={styles.textBold}>
 						Country: <Text style={styles.text}>{item.country}</Text>
@@ -142,7 +133,7 @@ export function MyFavoriteGenresScreen() {
 						Genre: <Text style={styles.text}>{item.genre}</Text>
 					</Text>
 				</View>
-			</View>
+			</TouchableOpacity>
 		);
 	}
 
@@ -154,6 +145,7 @@ export function MyFavoriteGenresScreen() {
 		<SafeAreaView style={styles.container}>
 			{hiddenForm ? (
 				<View style={styles.containerForm}>
+					<ListHeader />
 					<CustomInput
 						title='Genre Name'
 						placeholder='Genre Name'
@@ -178,6 +170,7 @@ export function MyFavoriteGenresScreen() {
 				</View>
 			) : (
 				<TouchableOpacity onPress={backSearchFavoriteGenres}>
+					<ListHeader />
 					<Text style={styles.backButtonBandName}>
 						{" "}
 						Back Search your favorite Genres
@@ -188,8 +181,7 @@ export function MyFavoriteGenresScreen() {
 			<FlatList
 				data={dataGenreFavorites}
 				keyExtractor={(item) => item.id}
-				ListHeaderComponent={GenresHeader}
-				ItemSeparatorComponent={GenreSeparatorItems}
+				ItemSeparatorComponent={SeparatorItems}
 				renderItem={renderItem}
 			/>
 		</SafeAreaView>
@@ -218,21 +210,31 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-start",
 		alignItems: "center",
 		alignSelf: "center",
-		paddingVertical: 20,
+		paddingBottom: 20,
 	},
 	containerBand: {
-		padding: 0,
+		width: windowWidth,
 		justifyContent: "center",
 		alignItems: "center",
 		alignSelf: "center",
 	},
-	containerInfoBand: { padding: 0 },
+	containerInfoBand: { width: windowWidth, paddingVertical: 10 },
+	containerTitle: {
+		width: windowWidth,
+		backgroundColor: "#1f1d1d",
+		paddingVertical: 10,
+		justifyContent: "center",
+		alignItems: "center",
+		alignSelf: "center",
+	},
 	title: {
-		width: "100%",
 		color: "#fff",
-		fontSize: 42,
+		fontSize: 22,
 		fontWeight: "bold",
-		paddingBottom: 10,
+		paddingBottom: 0,
+		justifyContent: "center",
+		alignItems: "center",
+		alignSelf: "center",
 	},
 	textBold: { color: "#fff", fontSize: 18, fontWeight: "bold" },
 	text: { color: "#fff", fontSize: 16, fontWeight: "normal" },
@@ -249,12 +251,13 @@ const styles = StyleSheet.create({
 		backgroundColor: "#f20905",
 		padding: 10,
 	},
-	containerGenresHeader: {
+	containerListHeader: {
+		paddingBottom: 20,
 		alignSelf: "center",
 		justifyContent: "center",
 		alignItems: "center",
 	},
-	imageGenresHeader: {
+	imageListHeader: {
 		width: windowWidth,
 		height: 120,
 		textAlign: "center",

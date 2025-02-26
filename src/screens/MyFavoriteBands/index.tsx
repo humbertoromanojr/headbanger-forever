@@ -19,6 +19,21 @@ import { CustomInput } from "../../components/CustomInput";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
+type FavoriteBandsProps = {
+	id: string | undefined;
+	name: string | undefined;
+	image: string | undefined;
+	link: string | undefined;
+	genre: string | undefined;
+	country: string | undefined;
+	bandCover: string | undefined;
+	formedIn: string | undefined;
+	label: string | undefined;
+	location: string | undefined;
+	themes: string | undefined;
+	yearsActive: string | undefined;
+};
+
 export function MyFavoriteBandsScreen() {
 	const navigation = useNavigation();
 
@@ -122,10 +137,23 @@ export function MyFavoriteBandsScreen() {
 		setDataBand([]);
 	};
 
+	const ListHeader = () => {
+		return (
+			<View style={styles.containerListHeader}>
+				<Image
+					resizeMode='contain'
+					style={styles.imageListHeader}
+					source={require("../../assets/images/metal-arquives-logo.jpg")}
+				/>
+			</View>
+		);
+	};
+
 	return (
 		<View style={styles.container}>
 			{hiddenForm ? (
 				<View style={styles.containerForm}>
+					<ListHeader />
 					<CustomInput
 						title='Band Name'
 						placeholder='Band Name'
@@ -150,13 +178,15 @@ export function MyFavoriteBandsScreen() {
 				</View>
 			) : (
 				<TouchableOpacity onPress={backSearchBandName}>
+					<ListHeader />
+
 					<Text style={styles.backButtonBandName}>
 						{" "}
 						Back Search band name
 					</Text>
 				</TouchableOpacity>
 			)}
-			{dataBand.map((b) => (
+			{dataBand.map((b: FavoriteBandsProps) => (
 				<ScrollView>
 					<View key={b.id} style={styles.containerBand}>
 						<Text style={styles.title}>{b.name}</Text>
@@ -232,7 +262,7 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-start",
 		alignItems: "center",
 		alignSelf: "center",
-		paddingVertical: 20,
+		paddingBottom: 20,
 	},
 	containerBand: {
 		padding: 10,
@@ -248,12 +278,17 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		paddingBottom: 10,
 	},
-	textBold: { color: "#fff", fontSize: 18, fontWeight: "bold" },
-	text: { color: "#fff", fontSize: 16, fontWeight: "normal" },
+	textBold: {
+		color: "#fff",
+		fontSize: 22,
+		marginBottom: 10,
+		fontWeight: "bold",
+	},
+	text: { color: "#fff", fontSize: 20, fontWeight: "normal" },
 	bandCover: {
 		paddingBottom: 10,
 		width: windowWidth,
-		height: 300,
+		height: windowWidth,
 	},
 	backButtonBandName: {
 		width: windowWidth,
@@ -262,5 +297,17 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		backgroundColor: "#f20905",
 		padding: 10,
+	},
+	containerListHeader: {
+		marginBottom: 20,
+		alignSelf: "center",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	imageListHeader: {
+		width: windowWidth,
+		height: 120,
+		textAlign: "center",
+		resizeMode: "cover",
 	},
 });

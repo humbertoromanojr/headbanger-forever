@@ -55,6 +55,16 @@ Install node_modules <br />
 Run application <br />
 <img src="https://drive.google.com/uc?export=view&id=16QqYlur8qtl5ao_XyEb4IthGyveQmELo" alt="" width="22" border="0" /> `npx start`
 
+## Sources
+
+# Login Context API
+
+- https://www.youtube.com/watch?v=tANqHoN1nlY
+
+# Icon and Splash Screen without library
+
+- https://www.youtube.com/watch?v=3Gf9yb53bJM
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](https://opensource.org/licenses/MIT) page for details.

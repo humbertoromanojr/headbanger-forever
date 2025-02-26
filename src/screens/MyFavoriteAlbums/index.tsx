@@ -10,6 +10,7 @@ import {
 	SafeAreaView,
 	Dimensions,
 	LogBox,
+	ScrollView,
 	FlatList,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -19,98 +20,89 @@ import { CustomInput } from "../../components/CustomInput";
 
 const windowWidth = Dimensions.get("window").width;
 
-type FavoriteGenresProps = {
-	id: number | undefined;
-	name: string | undefined;
-	image: string | undefined;
+type FavoriteAlbumsProps = {
+	id: string | undefined;
+	title: string | undefined;
 	link: string | undefined;
-	genre: string | undefined;
+	date: string | undefined;
+	type: string | undefined;
+	band: string | undefined;
 	country: string | undefined;
+	genre: string | undefined;
 };
 
 export function MyFavoriteAlbumsScreen() {
 	const navigation = useNavigation();
 
-	const [genreName, setGenreName] = useState("");
+	const [albumName, setAlbumName] = useState("");
 
-	const [dataGenreFavorites, setDataGenreFavorites] = useState([]);
+	const [dataFavoriteAlbums, setDataFavoriteAlbums] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
+
+	const [selectedBandId, setSelectedBandId] = useState("");
 
 	const [hiddenForm, setHiddenForm] = useState(true);
 
-	async function loadFavoriteAlbums() {
+	function loadFavoriteAlbums() {
+		if (albumName == "" || albumName == null) {
+			Alert.alert("Error", "Please enter a Genre name!");
+			return;
+		}
+
+		setIsLoading(true);
+
 		try {
-			if (genreName == "" || genreName == null) {
-				Alert.alert("Error", "Please enter a Genre name!");
-				return;
-			}
+			fetch(`https://metal-api.dev/search/albums/title/${albumName}`, {
+				method: "GET",
+			})
+				.then(async (response) => {
+					const res = await response.json();
 
-			setIsLoading(true);
+					console.log("data Album Name: ", res);
 
-			const response = await api
-				.get(`/search/albums/title/${genreName}`)
-				.then((response) => {
-					if (response.data.length > 0) {
-						const data = response.data;
-						setDataGenreFavorites([data]);
-
-						console.log("genre Name: ", data[0].genre);
-
-						setHiddenForm(false);
-					} else {
-						setIsLoading(false);
-
-						Alert.alert("Error", "No Genre found with this name! ");
-						return;
-					}
-
+					setDataFavoriteAlbums(res);
+					setHiddenForm(false);
 					setIsLoading(false);
-					setGenreName("");
+					setAlbumName("");
 				})
 				.catch((error) => {
-					console.error(error);
-					setIsLoading(false);
-					Alert.alert(
-						"Error",
-						"Please try again more later! 1 loadBandNames",
+					console.error(
+						"Error then catch loadFavoriteAlbums2: ",
+						error,
 					);
-				});
+					setIsLoading(false);
+					setAlbumName("");
+					Alert.alert("Error", "Please try again more later!");
+				})
+				.finally(() => setIsLoading(false));
 		} catch (error) {
-			console.error("Error", error);
+			console.log("Error try catch loadFavoriteAlbums2: ", error);
 			setIsLoading(false);
-			Alert.alert(
-				"Error",
-				"Please try again more later! 2 loadBandNames",
-			);
+			setAlbumName("");
+			Alert.alert("Error", "Please try again more later!");
 		}
 	}
 
-	useEffect(() => {
-		setGenreName("Death Metal");
-		loadGenreFavorites();
-	}, []);
+	//console.log("dataFavoriteAlbums :", dataFavoriteAlbums);
 
-	console.log("dataGenreFavorites :", dataGenreFavorites);
-	console.log("genreName :", genreName);
-
-	const backSearchFavoriteGenres = () => {
+	const backSearchFavoriteAlbums = () => {
 		setHiddenForm(true);
-		setDataGenreFavorites([]);
+		setDataFavoriteAlbums([]);
 	};
 
-	const GenresHeader = () => {
+	const ListHeader = () => {
 		return (
-			<View style={styles.containerGenresHeader}>
+			<View style={styles.containerListHeader}>
 				<Image
 					resizeMode='contain'
-					style={styles.imageGenresHeader}
+					style={styles.imageListHeader}
 					source={require("../../assets/images/metal-arquives-logo.jpg")}
 				/>
 			</View>
 		);
 	};
 
-	const GenreSeparatorItems = () => {
+	const SeparatorItems = () => {
 		return (
 			<View style={{ width: windowWidth }}>
 				<View
@@ -123,26 +115,46 @@ export function MyFavoriteAlbumsScreen() {
 		);
 	};
 
-	function GenresItem(item: any) {
+	function seeMyFavoriteBand(item: FavoriteAlbumsProps) {
+		//console.log("MyFavoriteAlbums - item.id: ", item);
+
+		setSelectedBandId(item);
+
+		navigation.setParams({ item });
+
+		navigation.navigate("My Favorite Band Details", { item });
+	}
+
+	function GenresItem(item: FavoriteAlbumsProps) {
 		return (
-			<View key={item.id} style={styles.containerBand}>
-				<Text style={styles.title}>{item.name}</Text>
-				<Image
-					style={styles.bandCover}
-					resizeMode='cover'
-					source={{
-						uri: `${item.link}`,
-					}}
-				/>
+			<TouchableOpacity
+				key={item.id}
+				style={styles.containerBand}
+				onPress={() => seeMyFavoriteBand(item.id)}>
+				<View style={styles.containerTitle}>
+					<Text style={styles.title}>{item.band.name}</Text>
+				</View>
+
 				<View style={styles.containerInfoBand}>
 					<Text style={styles.textBold}>
-						Country: <Text style={styles.text}>{item.country}</Text>
+						Album: <Text style={styles.text}>{item.title}</Text>
 					</Text>
 					<Text style={styles.textBold}>
-						Genre: <Text style={styles.text}>{item.genre}</Text>
+						Type: <Text style={styles.text}>{item.type}</Text>
+					</Text>
+					<Text style={styles.textBold}>
+						Genre:{" "}
+						<Text style={styles.text}>{item.band.genre}</Text>
+					</Text>
+					<Text style={styles.textBold}>
+						Country:{" "}
+						<Text style={styles.text}>{item.band.country}</Text>
+					</Text>
+					<Text style={styles.textBold}>
+						Date: <Text style={styles.text}>{item.date}</Text>
 					</Text>
 				</View>
-			</View>
+			</TouchableOpacity>
 		);
 	}
 
@@ -154,42 +166,43 @@ export function MyFavoriteAlbumsScreen() {
 		<SafeAreaView style={styles.container}>
 			{hiddenForm ? (
 				<View style={styles.containerForm}>
+					<ListHeader />
 					<CustomInput
-						title='Genre Name'
-						placeholder='Genre Name'
+						title='Album Name'
+						placeholder='Album Name'
 						placeholderTextColor='#fff'
-						value={genreName}
-						onChangeText={setGenreName}
+						value={albumName}
+						onChangeText={setAlbumName}
 					/>
 
 					<TouchableOpacity
 						activeOpacity={0.7}
 						disabled={isLoading}
 						style={styles.button}
-						onPress={() => loadGenreFavorites()}>
+						onPress={() => loadFavoriteAlbums()}>
 						{isLoading ? (
 							<ActivityIndicator size={"large"} color='#fff' />
 						) : (
 							<Text style={styles.buttonText}>
-								Search your favorite Genres
+								Search your favorite Albums
 							</Text>
 						)}
 					</TouchableOpacity>
 				</View>
 			) : (
-				<TouchableOpacity onPress={backSearchFavoriteGenres}>
-					<Text style={styles.backButtonBandName}>
+				<TouchableOpacity onPress={backSearchFavoriteAlbums}>
+					<ListHeader />
+					<Text style={styles.backButton}>
 						{" "}
-						Back Search your favorite Genres
+						Back Search your favorite Album
 					</Text>
 				</TouchableOpacity>
 			)}
 
 			<FlatList
-				data={dataGenreFavorites}
+				data={dataFavoriteAlbums}
 				keyExtractor={(item) => item.id}
-				ListHeaderComponent={GenresHeader}
-				ItemSeparatorComponent={GenreSeparatorItems}
+				ItemSeparatorComponent={SeparatorItems}
 				renderItem={renderItem}
 			/>
 		</SafeAreaView>
@@ -199,6 +212,7 @@ export function MyFavoriteAlbumsScreen() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		width: "100%",
 		backgroundColor: "#000",
 		alignItems: "center",
 		justifyContent: "flex-start",
@@ -218,21 +232,33 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-start",
 		alignItems: "center",
 		alignSelf: "center",
-		paddingVertical: 20,
+		paddingBottom: 20,
 	},
 	containerBand: {
-		padding: 0,
+		width: windowWidth,
+		paddingVertical: 0,
 		justifyContent: "center",
 		alignItems: "center",
 		alignSelf: "center",
 	},
-	containerInfoBand: { padding: 0 },
+	containerInfoBand: { width: windowWidth, paddingVertical: 10 },
+	containerTitle: {
+		width: windowWidth,
+		backgroundColor: "#1f1d1d",
+		paddingVertical: 10,
+		justifyContent: "center",
+		alignItems: "center",
+		alignSelf: "center",
+	},
 	title: {
-		width: "100%",
 		color: "#fff",
-		fontSize: 42,
+		fontSize: 22,
 		fontWeight: "bold",
-		paddingBottom: 10,
+		paddingBottom: 0,
+
+		justifyContent: "center",
+		alignItems: "center",
+		alignSelf: "center",
 	},
 	textBold: { color: "#fff", fontSize: 18, fontWeight: "bold" },
 	text: { color: "#fff", fontSize: 16, fontWeight: "normal" },
@@ -241,7 +267,7 @@ const styles = StyleSheet.create({
 		width: windowWidth,
 		height: 300,
 	},
-	backButtonBandName: {
+	backButton: {
 		width: windowWidth,
 		color: "#fff",
 		fontSize: 18,
@@ -249,12 +275,13 @@ const styles = StyleSheet.create({
 		backgroundColor: "#f20905",
 		padding: 10,
 	},
-	containerGenresHeader: {
+	containerListHeader: {
+		paddingBottom: 20,
 		alignSelf: "center",
 		justifyContent: "center",
 		alignItems: "center",
 	},
-	imageGenresHeader: {
+	imageListHeader: {
 		width: windowWidth,
 		height: 120,
 		textAlign: "center",

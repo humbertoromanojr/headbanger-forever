@@ -69,8 +69,21 @@ export function HomeScreen() {
 		}
 	}, [bandId]);
 
+	const ListHeader = () => {
+		return (
+			<View style={styles.containerListHeader}>
+				<Image
+					resizeMode='contain'
+					style={styles.imageListHeader}
+					source={require("../../assets/images/metal-arquives-logo.jpg")}
+				/>
+			</View>
+		);
+	};
+
 	return (
 		<View style={styles.container}>
+			<ListHeader />
 			<ScrollView showsHorizontalScrollIndicator={false}>
 				<View style={styles.containerCarousel}>
 					<AutoCarousel />
@@ -111,5 +124,17 @@ const styles = StyleSheet.create({
 		fontSize: 22,
 		padding: 10,
 		textAlign: "justify",
+	},
+	containerListHeader: {
+		paddingBottom: 20,
+		alignSelf: "center",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	imageListHeader: {
+		width: windowWidth,
+		height: 120,
+		textAlign: "center",
+		resizeMode: "cover",
 	},
 });

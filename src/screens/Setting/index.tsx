@@ -62,7 +62,7 @@ export function SettingScreen() {
 					/>
 				</View>
 				<View style={styles.containerInfo}>
-					<Text style={styles.title}>Tip</Text>
+					<Text style={styles.title}>Planned Features</Text>
 					<Text style={styles.text}>
 						If you want to change the Carousel settings above, click
 						on the menu above and then on settings.

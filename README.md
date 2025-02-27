@@ -57,11 +57,11 @@ Run application <br />
 
 ## Sources
 
-# Login Context API
+Login Context API:
 
 - https://www.youtube.com/watch?v=tANqHoN1nlY
 
-# Icon and Splash Screen without library
+Icon and Splash Screen without library:
 
 - https://www.youtube.com/watch?v=3Gf9yb53bJM
 

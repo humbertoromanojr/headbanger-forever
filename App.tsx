@@ -4,13 +4,16 @@ import { StatusBar } from "react-native";
 
 import { Router } from "./src/routes/Router";
 import { AuthProvider } from "./src/contexts/Auth";
+import { ThemeProvider } from "@react-navigation/native";
 
 function App(): React.JSX.Element {
 	return (
 		<GestureHandlerRootView>
 			<AuthProvider>
-				<StatusBar barStyle={"dark-content"} translucent />
-				<Router />
+				<ThemeProvider>
+					<StatusBar barStyle={"dark-content"} translucent />
+					<Router />
+				</ThemeProvider>
 			</AuthProvider>
 		</GestureHandlerRootView>
 	);

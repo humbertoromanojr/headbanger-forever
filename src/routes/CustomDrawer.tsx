@@ -6,11 +6,7 @@ import {
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-import { useAuth } from "../contexts/Auth";
-
 export function CustomDrawerContent(props, navigation) {
-	const { signOut } = useAuth();
-
 	function closeDrawer() {
 		props.navigation.closeDrawer();
 	}
@@ -26,14 +22,6 @@ export function CustomDrawerContent(props, navigation) {
 						style={{ marginRight: -20 }}
 					/>
 				</TouchableOpacity>
-				<TouchableOpacity onPress={signOut}>
-					<Icon
-						name='logout'
-						size={30}
-						color={"#ccc"}
-						style={{ marginRight: -20 }}
-					/>
-				</TouchableOpacity>
 			</View>
 			<View>
 				<DrawerItemList {...props} />
@@ -44,7 +32,7 @@ export function CustomDrawerContent(props, navigation) {
 
 const styles = StyleSheet.create({
 	container: {
-		paddingVertical: 0,
+		paddingVertical: 20,
 		paddingHorizontal: 0,
 	},
 	headerContainer: {

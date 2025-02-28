@@ -24,12 +24,14 @@ function CustomInput({ ...rest }: InputProps) {
 const styles = StyleSheet.create({
 	container: {
 		width: "90%",
-		backgroundColor: "#f00707",
+		backgroundColor: "#222",
 		alignItems: "center",
 		justifyContent: "center",
 		paddingVertical: 10,
 		paddingHorizontal: 20,
 		marginBottom: 20,
+		borderWidth: 1,
+		borderColor: "#444",
 		borderRadius: 50,
 		color: "#ffffff",
 		fontSize: 22,

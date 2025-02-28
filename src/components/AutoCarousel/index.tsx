@@ -14,7 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import api from "../../services/api";
 
-const width = Dimensions.get("window").width;
+const widthScreen = Dimensions.get("window").width;
 
 interface BandProps {
 	id: string;
@@ -31,47 +31,39 @@ export function AutoCarousel({ genreId }) {
 	const navigation = useNavigation();
 
 	const [pagingEnabled, setPagingEnabled] = React.useState(true);
-	const [bandsId, setBandsId] = React.useState([]);
+	const [bandsId, setBandsId] = React.useState([] as string[]);
 	const [bands, setBands] = React.useState([]);
 
 	const [genreName, setGenreName] = React.useState("Death");
 
 	const [isLoading, setIsLoading] = React.useState(false);
 
-	const [changeBands, setChangeBands] = React.useState(0);
-
-	React.useEffect(() => {
-		loadBand();
-	}, []);
-
 	React.useEffect(() => {
 		updatedBandsCarousel();
 	}, []);
 
-	let count = 0;
 	const updatedBandsCarousel = () => {
 		setInterval(() => {
-			count++;
-
 			loadBand();
-			console.log("------ setInterval - setInterval -----> ");
-
-			setChangeBands(count);
+			updatedState();
 		}, 60000 * 3);
-		setChangeBands(count);
 	};
 
-	console.log("----- ChangeBands ------ ", changeBands);
+	let countUnit = 0;
+	const updatedState = () => {
+		countUnit++;
+		if (countUnit == 19) {
+			countUnit = 0;
+		}
+	};
 
 	async function loadBand() {
-		setChangeBands(count);
 		try {
 			fetch(`https://metal-api.dev/search/bands/genre/${genreName}`, {
 				method: "GET",
 			})
 				.then(async (response) => {
 					setIsLoading(true);
-					console.log("----- get BandId ------ ");
 					const res = await response.json();
 					setBandsId([res]);
 
@@ -86,64 +78,35 @@ export function AutoCarousel({ genreId }) {
 						};
 					});
 					setBandsId(bandIds);
-					setIsLoading(false);
 
 					let i = 0;
-					const allBands = [];
+					const tenUnit = 0;
 
-					if (changeBands == 0 || changeBands == null) {
-						console.log(
-							"----- ChangeBands === 000000 ------ ",
-							changeBands,
-						);
-						for (i = 0; i <= bandIds.length && i <= 10; i++) {
-							const response = await api
-								.get(`/bands/${bandIds[i].id}`)
-								.then((response) => {
-									setIsLoading(true);
-									const data = response.data;
+					const allBands = [] as string[];
 
-									allBands.push(data);
+					console.log(
+						Number(countUnit + "" + tenUnit) +
+							"-" +
+							Number(countUnit + 1 + "" + tenUnit),
+					);
 
-									setIsLoading(false);
-								})
-								.catch((error) => {
-									console.error(error);
-									setIsLoading(false);
-									Alert.alert(
-										"Error",
-										"Please try again more later! 1 loadBandId",
-									);
-								});
-						}
-					} else if (changeBands != 0 || changeBands != null) {
-						console.log(
-							"----- ChangeBands !== 000000 ------ ",
-							changeBands,
-						);
-						for (
-							i = changeBands + 1;
-							i <= bandIds.length && i <= changeBands + 10;
-							i++
-						) {
-							const response = await api
-								.get(`/bands/${bandIds[i].id}`)
-								.then((response) => {
-									setIsLoading(true);
-									const data = response.data;
+					for (
+						i = Number(countUnit + "" + tenUnit);
+						i <= bandIds.length &&
+						i <= Number(countUnit + 1 + "" + tenUnit);
+						i++
+					) {
+						const response = await api
+							.get(`/bands/${bandIds[i].id}`)
+							.then((response) => {
+								const data = response.data;
 
-									allBands.push(data);
-									setIsLoading(false);
-								})
-								.catch((error) => {
-									console.error(error);
-									setIsLoading(false);
-									Alert.alert(
-										"Error",
-										"Please try again more later! 1 loadBandId",
-									);
-								});
-						}
+								allBands.push(data);
+							})
+							.catch((error) => {
+								console.error(error);
+								setIsLoading(false);
+							});
 					}
 
 					const filterBands = allBands.map((b: BandProps) => {
@@ -156,25 +119,22 @@ export function AutoCarousel({ genreId }) {
 						};
 					});
 
-					console.log("Bands filterBands -----> ", filterBands);
+					console.log("filterBands: ", filterBands);
 
 					setBands(filterBands);
 					setIsLoading(false);
 				})
 				.catch((error) => {
-					console.error("Error then catch Fetch Bands: ", error);
+					console.error("Error: then catch: ", error);
 
-					Alert.alert("Error", "Please try again more later!");
 					setIsLoading(false);
 				})
 				.finally(() => {
-					console.log("finally");
 					setIsLoading(false);
 				});
 		} catch (error) {
 			console.error("Error", error);
 			setIsLoading(false);
-			Alert.alert("Error", "Please try again more later! 2 loadBandId");
 		}
 	}
 
@@ -235,8 +195,8 @@ export function AutoCarousel({ genreId }) {
 						parallaxScrollingScale: 0.9,
 						parallaxScrollingOffset: 50,
 					}}
-					width={width}
-					height={width}
+					width={widthScreen}
+					height={widthScreen}
 					renderItem={({ item }) => <RenderItem {...item} />}
 				/>
 			) : (
@@ -246,7 +206,7 @@ export function AutoCarousel({ genreId }) {
 					style={{
 						alignItems: "center",
 						justifyContent: "center",
-						marginTop: 70,
+						height: widthScreen,
 					}}
 				/>
 			)}
@@ -265,7 +225,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 	},
-	image: { width: width, height: width },
+	image: { width: widthScreen, height: widthScreen },
 	title: {
 		width: "100%",
 		height: 90,

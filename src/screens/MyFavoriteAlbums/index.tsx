@@ -109,6 +109,7 @@ export function MyFavoriteAlbumsScreen() {
 					style={{
 						borderBottomWidth: 1,
 						borderBottomColor: "#aaa",
+						padding: 5,
 					}}
 				/>
 			</View>
@@ -241,7 +242,11 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		alignSelf: "center",
 	},
-	containerInfoBand: { width: windowWidth, paddingVertical: 10 },
+	containerInfoBand: {
+		width: windowWidth,
+		paddingVertical: 10,
+		paddingHorizontal: 10,
+	},
 	containerTitle: {
 		width: windowWidth,
 		backgroundColor: "#1f1d1d",
@@ -249,13 +254,14 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		alignSelf: "center",
+		borderBottomWidth: 1,
+		borderBottomColor: "#aaa",
 	},
 	title: {
 		color: "#fff",
 		fontSize: 22,
 		fontWeight: "bold",
 		paddingBottom: 0,
-
 		justifyContent: "center",
 		alignItems: "center",
 		alignSelf: "center",
